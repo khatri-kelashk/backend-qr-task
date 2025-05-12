@@ -7,5 +7,10 @@ export const sendToken = (user, statusCode, res, message) => {
         httpOnly: true,
         // secure: true uncommit it when you have SSL in Frontend
     } 
-    res.status(statusCode);
+    res.status(statusCode).cookie("token", token, options).json({
+        success: true,
+        user,
+        message,
+        token
+    });
 }
