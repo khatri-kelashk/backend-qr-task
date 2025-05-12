@@ -31,5 +31,17 @@ export const login = catchAsyncError( async (req, res, next) => {
         new ErrorHandler("Invalid Email or Password", 400);
     }
     sendToken(UserExist, 200, res, "User logged in successfully!");
+});
 
+export const logout = catchAsyncError(async (_req, res, _next) => {
+    res
+        .status(201)
+        .cookie("token", "", {
+            httpOnly: true,
+            expires: new Date(Date.now()),
+        });
+    res.json({
+        success: true,
+        message: "User logged out successfully!",
+    });
 });
