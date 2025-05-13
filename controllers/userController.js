@@ -3,6 +3,15 @@ import { catchAsyncError } from '../middleware/catchAsyncError.js';
 import { sendToken } from "../utils/jwtToken.js";
 import ErrorHandler from '../middleware/error.js';
 
+
+export const test = catchAsyncError(async (_req, res, _next) => {
+    
+    res.json({
+        success: true,
+        message: "User API is running!",
+    });
+});
+
 export const register = catchAsyncError( async (req, res, next) => {
     const { name, email, role, phone, password } = req.body;    
     if (!name || !email || !role || !password) {
