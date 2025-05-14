@@ -13,15 +13,15 @@ export const test = catchAsyncError(async (_req, res, _next) => {
 });
 
 export const register = catchAsyncError( async (req, res, next) => {
-    const { name, email, role, phone, password } = req.body;    
-    if (!name || !email || !role || !password) {
+    const { user_name, email, password } = req.body;    
+    if (!user_name || !email || !password) {
         return next(new ErrorHandler("Please fill full registration form!"));
     }
     const emailExist = await User.findOne({ email: email});
     if (emailExist) {
        return next(new ErrorHandler("Email already exists!")); 
     }
-    const user = await User.create({ name, email, phone, role , password});
+    const user = await User.create({ user_name, email, password});
     
     sendToken(user, 200, res, "User registered successfully!");
 });
@@ -29,17 +29,17 @@ export const register = catchAsyncError( async (req, res, next) => {
 export const login = catchAsyncError( async (req, res, next) => {
     const { email, password } = req.body;    
     if ( !email || !password) {
-        return next(new ErrorHandler("Please provide, Email and Password!", 400));
+        return next(new ErrorHandler("Please provide Email and Password!", 400));
     }
-    const UserExist = await User.findOne({ email: email}).select("+password");
-    if (!UserExist) {
+    const userExist = await User.findOne({ email: email}).select("+password");
+    if (!userExist) {
        return next(new ErrorHandler("Invalid Email or Password!")); 
     }
-    const isPasswordMatched = await User.comparePassword(password);
+    const isPasswordMatched = await userExist.comparePassword(password);
     if (!isPasswordMatched) {
         new ErrorHandler("Invalid Email or Password", 400);
     }
-    sendToken(UserExist, 200, res, "User logged in successfully!");
+    sendToken(userExist, 200, res, "User logged in successfully!");
 });
 
 export const logout = catchAsyncError(async (_req, res, _next) => {
